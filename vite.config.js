@@ -1,13 +1,13 @@
+import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
+  base: '/', // Change this from '/vue_frontend_mini_app/' to just '/'
   plugins: [vue()],
-  base: '/vue_frontend_mini_app/',
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
-  },
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  }
 })
