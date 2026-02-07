@@ -1,70 +1,50 @@
-<!-- <script setup>
+<script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
-const products = ref([]);
+const foodItems = ref([]);
+const loading = ref(true);
 
-const API = import.meta.env.production.VITE_API_URL
-console.log('API URL:', API)
-
-
-const fetchProducts = async () => {
+const fetchFood = async () => {
   try {
+    // ⚡ DOUBLE CHECK THIS URL ⚡
     const response = await axios.get('http://localhost:8000/products');
-    products.value = response.data;
+    foodItems.value = response.data;
   } catch (error) {
-    console.error("Mission failed: Could not fetch products", error);
+    console.error("API Call Failed:", error);
+  } finally {
+    loading.value = false;
   }
 };
 
 onMounted(() => {
-  fetchProducts();
+  fetchFood();
 });
-</script> -->
-
-<script setup>
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
-
-const products = ref([])
-
-const API = import.meta.env.VITE_API_URL
-console.log('API URL:', API)
-
-const fetchProducts = async () => {
-  try {
-    const response = await axios.get(`${API}/products/`)  // ✅ use env
-    products.value = response.data
-  } catch (error) {
-    console.error("Mission failed: Could not fetch products", error)
-  }
-}
-
-onMounted(fetchProducts)
 </script>
 
-
 <template>
-  <h3>Home</h3>
   <div class="p-4">
-    <div class="grid grid-cols-2 gap-4">
-      <div v-for="product in products" :key="product.id"
+    <div v-if="loading" class="text-center py-10 text-chhab-text-muted">
+      Loading Menu...
+    </div>
+
+    <div v-else class="grid grid-cols-2 gap-4">
+      <div v-for="item in foodItems" :key="item.id"
         class="bg-white rounded-[24px] p-3 shadow-sm border border-gray-100 flex flex-col gap-2">
 
-        <div class="w-full aspect-square bg-gray-100 rounded-[20px] overflow-hidden">
-          <img :src="product.image_url" :alt="product.name" class="w-full h-full object-cover">
+        <div class="w-full aspect-square bg-gray-50 rounded-[20px] overflow-hidden">
+          <img :src="item.image_url" :alt="item.name" class="w-full h-full object-cover">
         </div>
 
-        <div class="mt-1">
-          <h3 class="font-bold text-sm text-chhab-text-bold leading-tight">{{ product.name }}</h3>
-          <p class="text-[10px] text-chhab-text-muted mt-0.5">Code: {{ product.id }}</p>
+        <div class="px-1 mt-1">
+          <h3 class="font-bold text-sm text-chhab-text-bold leading-tight truncate">{{ item.name }}</h3>
+          <p class="text-[10px] text-chhab-text-muted">Code: {{ item.id }}</p>
         </div>
 
-        <div class="flex justify-between items-center mt-2">
-          <span class="text-chhab-primary font-bold text-sm">${{ product.price }}</span>
-
-          <button class="bg-chhab-primary text-white px-3 py-1 rounded-full text-[11px] font-bold shadow-sm">
-            Add +
+        <div class="flex justify-between items-center mt-1">
+          <span class="text-chhab-primary font-bold text-sm">${{ item.price }}</span>
+          <button class="bg-chhab-primary text-white w-8 h-8 rounded-full flex items-center justify-center shadow-sm">
+            +
           </button>
         </div>
       </div>
