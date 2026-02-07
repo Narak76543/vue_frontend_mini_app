@@ -1,8 +1,12 @@
-<script setup>
+<!-- <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
 const products = ref([]);
+
+const API = import.meta.env.production.VITE_API_URL
+console.log('API URL:', API)
+
 
 const fetchProducts = async () => {
   try {
@@ -16,7 +20,29 @@ const fetchProducts = async () => {
 onMounted(() => {
   fetchProducts();
 });
+</script> -->
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+
+const products = ref([])
+
+const API = import.meta.env.VITE_API_URL
+console.log('API URL:', API)
+
+const fetchProducts = async () => {
+  try {
+    const response = await axios.get(`${API}/products/`)  // ✅ use env
+    products.value = response.data
+  } catch (error) {
+    console.error("Mission failed: Could not fetch products", error)
+  }
+}
+
+onMounted(fetchProducts)
 </script>
+
 
 <template>
   <h3>Home</h3>
